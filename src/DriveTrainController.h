@@ -1,8 +1,7 @@
 #pragma once
 
+#include "BaseController.h"
 #include "WPILib.h"
-
-class BaseController;
 
 /* TODO: Change order/numbering of
    enumeration to correct motor channels. */
