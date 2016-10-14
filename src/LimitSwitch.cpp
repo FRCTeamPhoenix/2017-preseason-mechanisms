@@ -10,7 +10,7 @@ LimitSwitch::~LimitSwitch(void)
 }
 
 bool
-LimitSwitch::isPressed(void)
+LimitSwitch::get(void)
 {
-  return !get();
+  return !Get();
 }
