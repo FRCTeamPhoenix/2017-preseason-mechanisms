@@ -1,26 +1,18 @@
 #include "WPILib.h"
 
+#include "LimitSwitch.h"
+
 class Robot : public SampleRobot
 {
-  const static int frontLeftChannel  = 2;
-  const static int rearLeftChannel   = 3;
-  const static int frontRightChannel = 1;
-  const static int rearRightChannel  = 0;
+  static const uint32_t LIMIT_SWITCH_PORT = 0;
 
-  const static int joystickChannel   = 0;
-
-  RobotDrive robotDrive;
-  Joystick stick;
+  LimitSwitch m_limitSwitch;
 
 public:
   Robot()
-    : robotDrive(frontLeftChannel, rearLeftChannel,
-                 frontRightChannel, rearRightChannel),
-      stick(joystickChannel)
+    : m_limitSwitch(LIMIT_SWITCH_PORT)
   {
-    robotDrive.SetExpiration(0.1);
-    robotDrive.SetInvertedMotor(RobotDrive::kFrontLeftMotor, true); // invert the left side motors
-    robotDrive.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);  // you may need to change or remove this to match your robot
+    SmartDashboard::init();
   }
 
   void OperatorControl()
@@ -28,9 +20,8 @@ public:
     robotDrive.SetSafetyEnabled(false);
     while (IsOperatorControl() && IsEnabled())
     {
-      // Use the joystick X axis for lateral movement, Y axis for forward movement, and Z axis for rotation.
-      // This sample does not use field-oriented drive, so the gyro input is set to zero.
-      robotDrive.MecanumDrive_Cartesian(stick.GetX(), stick.GetY(), stick.GetZ());
+      bool pressed = m_limitSwitch.get();
+      SmartDashboard::PutString("DB/String 0", pressed ? "true" : "false");
 
       Wait(0.005); // wait 5ms to avoid hogging CPU cycles
     }
