@@ -17,7 +17,6 @@ public:
 
   void OperatorControl()
   {
-    robotDrive.SetSafetyEnabled(false);
     while (IsOperatorControl() && IsEnabled())
     {
       bool pressed = m_limitSwitch.get();
