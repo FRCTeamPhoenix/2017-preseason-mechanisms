@@ -12,5 +12,5 @@ LimitSwitch::~LimitSwitch(void)
 bool
 LimitSwitch::get(void)
 {
-  return !Get();
+  return Get();
 }
