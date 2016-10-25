@@ -9,6 +9,9 @@ ConfigEditor::~ConfigEditor()
 {
 }
 
+/*
+ * Sends requested variable's value to drive station.
+ */
 void ConfigEditor::getConfig()
 {
     std::string keyName = m_DriveStation->getStringInput(10);
@@ -25,7 +28,7 @@ void ConfigEditor::getConfig()
 
     if(pos == -1)
     {
-        std::cout << "Key entered was not a valid variables" << std::endl;
+        std::cout << "Key entered was not a valid variable" << std::endl;
         return;
     }
 
@@ -52,6 +55,9 @@ void ConfigEditor::getConfig()
     }
 }
 
+/*
+ * Gets the value of the specified key.
+ */
 int ConfigEditor::getInt(std::string key, int defaultValue)
 {
     return Preferences::GetInstance()->GetInt(key, defaultValue);
@@ -72,6 +78,9 @@ std::string ConfigEditor::getString(std::string key, std::string defaultValue)
     return Preferences::GetInstance()->GetString(key, defaultValue);
 }
 
+/*
+ * Updates variable as dictated by drive station.
+ */
 void ConfigEditor::saveConfig()
 {
     std::string keyName = m_DriveStation->getStringInput(10);
@@ -95,8 +104,11 @@ void ConfigEditor::saveConfig()
 
     std::string type = ConfigVariables::types[pos];
 
-    if(! isType(newValue,type))
+    if(!isType(newValue,type))
+    {
+	std::cout << "" << std::endl;
         return;
+    }
 
     if(type == "int")
     {
@@ -113,56 +125,49 @@ void ConfigEditor::saveConfig()
     }
 }
 
+/*
+ * Checks if a string is the specified type of number.
+ */
 bool ConfigEditor::isType(std::string str, std::string type)
 {
     if(type == "int")
-    {
         try
-        {
             std::stoi(str);
-        }
         catch(std::invalid_argument& e)
-        {
             return false;
-        }
-    }
     else if(type == "float")
-    {
         try
-        {
             std::stof(str);
-        }
         catch(std::invalid_argument& e)
-        {
             return false;
-        }
-    }
-
     else if(type == "double")
-    {
         try
-        {
             std::stod(str);
-        }
         catch(std::invalid_argument& e)
-        {
             return false;
-        }
-    }
-    return true;
+    else
+	return true;
 }
 
+/*
+ * Outputs all of the keys to standard output
+ * and SmartDashboard.
+ */
 void ConfigEditor::showAllKeys()
 {
     std::string final = "";
-    for(int i=0; i<ConfigVariables::numberOfVars; i++)
+    for(int i = 0; i < ConfigVariables::numberOfVars; i++)
     {
-        final+=ConfigVariables::variables[i]+"     "+ConfigVariables::types[i]+"\n";
+        final += ConfigVariables::variables[i]+"     "+ConfigVariables::types[i]+"\n";
     }
-    std::cout<<final<<std::endl;
+    std::cout << final << std::endl;
     SmartDashboard::PutString("Keys",final);
 }
 
+/*
+ * Updates input from variable editor. Should be
+ * executed every cycle.
+ */
 void ConfigEditor::update()
 {
     for (int i = 0; i < 6; i++)
@@ -170,21 +175,14 @@ void ConfigEditor::update()
         if (m_DriveStation->getButtonInput(i))
         {
             m_DriveStation->setButton(i, false);
-            std::cout << "Button was pressed" << std::endl;
+            std::cout << "Button " << i << " was pressed" << std::endl;
 
             if(i==5)
-            {
-                std::cout << "reached stage one" << std::endl;
                 saveConfig();
-                std::cout << "reached stage two with " << Preferences::GetInstance()->GetInt("teamNumber",481516) << std::endl;
-            }
             if(i==4)
-            {
                 getConfig();
-            }
         }
     }
-
 }
 
 void ConfigEditor::putProgDouble(std::string key, double value)

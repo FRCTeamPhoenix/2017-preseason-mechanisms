@@ -7,13 +7,13 @@ class ConfigEditor
 {
 public:
     ConfigEditor(DriveStation* DriveStation);
-    virtual ~ConfigEditor();
-    void update();
+    ~ConfigEditor(void);
+    void update(void);
 
-    void saveConfig();
-    void getConfig();
+    void saveConfig(void);
+    void getConfig(void);
     bool isType(std::string str, std::string type);
-    void showAllKeys();
+    void showAllKeys(void);
 
     int getInt(std::string key, int defaultValue = 0);
     float getFloat(std::string key, float defaultValue = 0.0f);
