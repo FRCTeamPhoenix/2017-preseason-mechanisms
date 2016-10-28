@@ -3,6 +3,8 @@
 
 #include <string>
 
+class Preferences;
+
 enum ConfigType
 {
     CONFIG_INT,
@@ -36,7 +38,8 @@ private:
     };
 
     static const ConfigVariable m_keys[];
-    static const Preferences *m_preferences;
+    static const int m_keysLength;
+    static Preferences *m_preferences;
 };
 
 #endif /* SRC_CONFIGEDITOR_H_ */

@@ -1,25 +1,24 @@
 #include "ConfigEditor.h"
 
-#include <stringstream>
+#include <sstream>
 #include <WPILib.h>
-
-using ConfigEditor::ConfigVariable;
 
 ConfigEditor::ConfigEditor()
 {
-    m_preferences = Preferences::GetInstance(); // Alias
 }
 
 /*
  * Static variable declarations
  */
-ConfigVariable ConfigEditor::m_keys =
-{{"Example1","int"},
- {"Example2","float"},
- {"Example3","double"},
- {"Example4","string"}};
+const ConfigEditor::ConfigVariable ConfigEditor::m_keys[] =
+{{"Example1",CONFIG_INT},
+ {"Example2",CONFIG_FLOAT},
+ {"Example3",CONFIG_DOUBLE},
+ {"Example4",CONFIG_STRING}};
 
-int ConfigEditor::m_keysLength = sizeof(m_keys) / sizeof(ConfigVariable);
+const int ConfigEditor::m_keysLength = sizeof(m_keys) / sizeof(ConfigEditor::ConfigVariable);
+
+Preferences *ConfigEditor::m_preferences = Preferences::GetInstance();
 
 ConfigEditor::~ConfigEditor()
 {
@@ -35,7 +34,7 @@ void ConfigEditor::getConfig()
     int pos = -1;
     for(int i = 0; i < m_keysLength; i++)
     {
-        if(keyName == m_keys[i])
+        if(keyName == m_keys[i].name)
         {
             pos = i;
             break;
@@ -80,7 +79,7 @@ void ConfigEditor::saveConfig()
     int pos = -1;
     for(int i = 0; i < m_keysLength; i++)
     {
-        if(keyName == m_keys[i])
+        if(keyName == m_keys[i].name)
         {
             pos = i;
             break;
@@ -120,7 +119,7 @@ void ConfigEditor::saveConfig()
 	    m_preferences->PutDouble(keyName, d);
 	    break;
 	case CONFIG_STRING:
-	    m_preferences->PutInt(keyName, newValue);
+	    m_preferences->PutString(keyName, newValue);
 	    break;
 	}
     } catch (...)
@@ -137,9 +136,25 @@ void ConfigEditor::saveConfig()
 void ConfigEditor::showAllKeys()
 {
     std::string final = "";
-    for(int i = 0; i < ConfigVariables::numberOfVars; i++)
+    for(int i = 0; i < m_keysLength; i++)
     {
-        final += m_keys[i].name+"\t"+m_keys[i].type+"\n";
+	std::string type;
+	switch (m_keys[i].type)
+	{
+	case CONFIG_INT:
+	    type = "int";
+	    break;
+	case CONFIG_FLOAT:
+	    type = "float";
+	    break;
+	case CONFIG_DOUBLE:
+	    type = "double";
+	    break;
+	case CONFIG_STRING:
+	    type = "string";
+	    break;
+	}
+        final += m_keys[i].name+"\t"+type+"\n";
     }
     std::cout << final << std::endl;
     SmartDashboard::PutString("Keys",final);
@@ -151,17 +166,18 @@ void ConfigEditor::showAllKeys()
  */
 void ConfigEditor::update()
 {
-    for (int i = 0; i < 6; i++)
+    const char* buttons[2] = {"Get Value", "Set Value"};
+    for (int i = 0; i < 1; i++)
     {
-        if (m_DriveStation->getButtonInput(i))
+        if (SmartDashboard::GetBoolean(buttons[i], false))
         {
-            m_DriveStation->setButton(i, false);
-            std::cout << "Button " << i << " was pressed" << std::endl;
+	    SmartDashboard::PutBoolean(buttons[i], false);
+            std::cout << "Button " << buttons[i] << " was pressed" << std::endl;
 
-            if(i == 5)
-                saveConfig();
-            else if(i == 4)
+            if(i == 0)
                 getConfig();
+            else if(i == 1)
+                saveConfig();
         }
     }
 }
