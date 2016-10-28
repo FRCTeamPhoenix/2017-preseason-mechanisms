@@ -1,9 +1,25 @@
 #include "ConfigEditor.h"
 
-ConfigEditor::ConfigEditor(DriveStation* DriveStation):
-    m_DriveStation(DriveStation)
+#include <stringstream>
+#include <WPILib.h>
+
+using ConfigEditor::ConfigVariable;
+
+ConfigEditor::ConfigEditor()
 {
+    m_preferences = Preferences::GetInstance(); // Alias
 }
+
+/*
+ * Static variable declarations
+ */
+ConfigVariable ConfigEditor::m_keys =
+{{"Example1","int"},
+ {"Example2","float"},
+ {"Example3","double"},
+ {"Example4","string"}};
+
+int ConfigEditor::m_keysLength = sizeof(m_keys) / sizeof(ConfigVariable);
 
 ConfigEditor::~ConfigEditor()
 {
@@ -14,12 +30,12 @@ ConfigEditor::~ConfigEditor()
  */
 void ConfigEditor::getConfig()
 {
-    std::string keyName = m_DriveStation->getStringInput(10);
+    std::string keyName = SmartDashboard::GetString("Key Name", "");
 
     int pos = -1;
-    for(int i=0;i<ConfigVariables::numberOfVars;i++)
+    for(int i = 0; i < m_keysLength; i++)
     {
-        if(keyName == ConfigVariables::variables[i])
+        if(keyName == m_keys[i])
         {
             pos = i;
             break;
@@ -32,50 +48,25 @@ void ConfigEditor::getConfig()
         return;
     }
 
-    std::string type = ConfigVariables::types[pos];
+    ConfigType type = m_keys[pos].type;
+    std::stringstream convert;
 
-    if(type == "int")
+    switch (type)
     {
-        std::stringstream ss;
-        ss << Preferences::GetInstance()->GetInt(keyName, 0);
-        m_DriveStation->setString(11, ss.str());
-    } else if(type == "float")
-    {
-        std::stringstream ss;
-        ss << Preferences::GetInstance()->GetFloat(keyName, 0);
-        m_DriveStation->setString(11, ss.str());
-    } else if(type == "double")
-    {
-        std::stringstream ss;
-        ss << Preferences::GetInstance()->GetDouble(keyName, 0);
-        m_DriveStation->setString(11, ss.str());
-    } else
-    {
-        m_DriveStation->setString(11, Preferences::GetInstance()->GetString(keyName, 0));
+    case CONFIG_INT:
+	convert << m_preferences->GetInt(keyName, 0);
+	break;
+    case CONFIG_FLOAT:
+	convert << m_preferences->GetFloat(keyName, 0);
+	break;
+    case CONFIG_DOUBLE:
+	convert << m_preferences->GetDouble(keyName, 0);
+	break;
+    case CONFIG_STRING:
+	convert << m_preferences->GetString(keyName, 0);
+	break;
     }
-}
-
-/*
- * Gets the value of the specified key.
- */
-int ConfigEditor::getInt(std::string key, int defaultValue)
-{
-    return Preferences::GetInstance()->GetInt(key, defaultValue);
-}
-
-float ConfigEditor::getFloat(std::string key, float defaultValue)
-{
-    return Preferences::GetInstance()->GetFloat(key, defaultValue);
-}
-
-double ConfigEditor::getDouble(std::string key, double defaultValue)
-{
-    return Preferences::GetInstance()->GetDouble(key, defaultValue);
-}
-
-std::string ConfigEditor::getString(std::string key, std::string defaultValue)
-{
-    return Preferences::GetInstance()->GetString(key, defaultValue);
+    SmartDashboard::PutString("Key Value", convert.str());
 }
 
 /*
@@ -83,13 +74,13 @@ std::string ConfigEditor::getString(std::string key, std::string defaultValue)
  */
 void ConfigEditor::saveConfig()
 {
-    std::string keyName = m_DriveStation->getStringInput(10);
-    std::string newValue = m_DriveStation->getStringInput(12);
+    std::string keyName = SmartDashboard::GetString("Key Name", "");
+    std::string newValue = SmartDashboard::GetString("New Value", "");
 
     int pos = -1;
-    for(int i=0;i<ConfigVariables::numberOfVars;i++)
+    for(int i = 0; i < m_keysLength; i++)
     {
-        if(keyName == ConfigVariables::variables[i])
+        if(keyName == m_keys[i])
         {
             pos = i;
             break;
@@ -102,51 +93,41 @@ void ConfigEditor::saveConfig()
         return;
     }
 
-    std::string type = ConfigVariables::types[pos];
+    ConfigType type = m_keys[pos].type;
+    std::stringstream convert(newValue);
 
-    if(!isType(newValue,type))
+    try
     {
-	std::cout << "" << std::endl;
-        return;
+	union
+	{
+	    int i;
+	    float f;
+	    double d;
+	};
+
+        switch (type)
+	{
+	case CONFIG_INT:
+	    convert >> i;
+	    m_preferences->PutInt(keyName, i);
+	    break;
+	case CONFIG_FLOAT:
+	    convert >> f;
+	    m_preferences->PutFloat(keyName, f);
+	    break;
+	case CONFIG_DOUBLE:
+	    convert >> d;
+	    m_preferences->PutDouble(keyName, d);
+	    break;
+	case CONFIG_STRING:
+	    m_preferences->PutInt(keyName, newValue);
+	    break;
+	}
+    } catch (...)
+    {
+	std::cout << "Invalid value" << std::endl;
+	return;
     }
-
-    if(type == "int")
-    {
-        Preferences::GetInstance()->PutInt(keyName, std::stoi(newValue));
-    } else if(type == "float")
-    {
-        Preferences::GetInstance()->PutFloat(keyName, std::stof(newValue));
-    } else if(type == "double")
-    {
-        Preferences::GetInstance()->PutDouble(keyName, std::stod(newValue));
-    } else
-    {
-        Preferences::GetInstance()->PutString(keyName, newValue);
-    }
-}
-
-/*
- * Checks if a string is the specified type of number.
- */
-bool ConfigEditor::isType(std::string str, std::string type)
-{
-    if(type == "int")
-        try
-            std::stoi(str);
-        catch(std::invalid_argument& e)
-            return false;
-    else if(type == "float")
-        try
-            std::stof(str);
-        catch(std::invalid_argument& e)
-            return false;
-    else if(type == "double")
-        try
-            std::stod(str);
-        catch(std::invalid_argument& e)
-            return false;
-    else
-	return true;
 }
 
 /*
@@ -158,7 +139,7 @@ void ConfigEditor::showAllKeys()
     std::string final = "";
     for(int i = 0; i < ConfigVariables::numberOfVars; i++)
     {
-        final += ConfigVariables::variables[i]+"     "+ConfigVariables::types[i]+"\n";
+        final += m_keys[i].name+"\t"+m_keys[i].type+"\n";
     }
     std::cout << final << std::endl;
     SmartDashboard::PutString("Keys",final);
@@ -177,18 +158,42 @@ void ConfigEditor::update()
             m_DriveStation->setButton(i, false);
             std::cout << "Button " << i << " was pressed" << std::endl;
 
-            if(i==5)
+            if(i == 5)
                 saveConfig();
-            if(i==4)
+            else if(i == 4)
                 getConfig();
         }
     }
 }
 
+/*
+ * Gets the value of the specified key.
+ */
+int ConfigEditor::getInt(std::string key, int defaultValue)
+{
+    return m_preferences->GetInt(key, defaultValue);
+}
+
+float ConfigEditor::getFloat(std::string key, float defaultValue)
+{
+    return m_preferences->GetFloat(key, defaultValue);
+}
+
+double ConfigEditor::getDouble(std::string key, double defaultValue)
+{
+    return m_preferences->GetDouble(key, defaultValue);
+}
+
+std::string ConfigEditor::getString(std::string key, std::string defaultValue)
+{
+    return m_preferences->GetString(key, defaultValue);
+}
+
+/*
+ * Saves a double value to the key.
+ */
 void ConfigEditor::putProgDouble(std::string key, double value)
 {
     if(key.find("prog") == 0)
-    {
-        Preferences::GetInstance()->PutDouble(key, value);
-    }
+        m_preferences->PutDouble(key, value);
 }

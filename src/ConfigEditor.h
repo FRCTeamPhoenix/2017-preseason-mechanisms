@@ -1,18 +1,25 @@
 #ifndef SRC_CONFIGEDITOR_H_
 #define SRC_CONFIGEDITOR_H_
 
-#include "DriveStation.h"
+#include <string>
+
+enum ConfigType
+{
+    CONFIG_INT,
+    CONFIG_FLOAT,
+    CONFIG_DOUBLE,
+    CONFIG_STRING
+};
 
 class ConfigEditor
 {
 public:
-    ConfigEditor(DriveStation* DriveStation);
+    ConfigEditor(void);
     ~ConfigEditor(void);
     void update(void);
 
     void saveConfig(void);
     void getConfig(void);
-    bool isType(std::string str, std::string type);
     void showAllKeys(void);
 
     int getInt(std::string key, int defaultValue = 0);
@@ -22,7 +29,14 @@ public:
 
     void putProgDouble(std::string key, double value);
 private:
-    DriveStation* m_DriveStation;
+    struct ConfigVariable
+    {
+	std::string name;
+	ConfigType type;
+    };
+
+    static const ConfigVariable m_keys[];
+    static const Preferences *m_preferences;
 };
 
 #endif /* SRC_CONFIGEDITOR_H_ */
