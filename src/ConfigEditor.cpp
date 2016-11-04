@@ -1,10 +1,11 @@
 #include "ConfigEditor.h"
 
+#include <iostream>
 #include <sstream>
-#include <WPILib.h>
 
 ConfigEditor::ConfigEditor()
 {
+    std::cout << "Initialized ConfigEditor" << std::endl;
 }
 
 /*
@@ -135,6 +136,7 @@ void ConfigEditor::saveConfig()
  */
 void ConfigEditor::showAllKeys()
 {
+    std::cout << "Showing ConfigEditor keys" << std::endl;
     std::string final = "";
     for(int i = 0; i < m_keysLength; i++)
     {

@@ -2,8 +2,7 @@
 #define SRC_CONFIGEDITOR_H_
 
 #include <string>
-
-class Preferences;
+#include <WPILib.h>
 
 enum ConfigType
 {
