@@ -5,6 +5,8 @@
 
 ConfigEditor::ConfigEditor()
 {
+    if (!m_preferences)
+	m_preferences = Preferences::GetInstance();
     std::cout << "Initialized ConfigEditor" << std::endl;
 }
 
@@ -19,7 +21,7 @@ const ConfigEditor::ConfigVariable ConfigEditor::m_keys[] =
 
 const int ConfigEditor::m_keysLength = sizeof(m_keys) / sizeof(ConfigEditor::ConfigVariable);
 
-Preferences *ConfigEditor::m_preferences = Preferences::GetInstance();
+Preferences *ConfigEditor::m_preferences = 0;
 
 ConfigEditor::~ConfigEditor()
 {
@@ -57,13 +59,13 @@ void ConfigEditor::getConfig()
 	convert << m_preferences->GetInt(keyName, 0);
 	break;
     case CONFIG_FLOAT:
-	convert << m_preferences->GetFloat(keyName, 0);
+	convert << m_preferences->GetFloat(keyName, 0.0f);
 	break;
     case CONFIG_DOUBLE:
-	convert << m_preferences->GetDouble(keyName, 0);
+	convert << m_preferences->GetDouble(keyName, 0.0);
 	break;
     case CONFIG_STRING:
-	convert << m_preferences->GetString(keyName, 0);
+	convert << m_preferences->GetString(keyName, "");
 	break;
     }
     SmartDashboard::PutString("Key Value", convert.str());
