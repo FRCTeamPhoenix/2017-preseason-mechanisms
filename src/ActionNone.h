@@ -4,8 +4,8 @@
 
 class ActionNone : public Action
 {
- public:
-   ActionNone(void);
-   void init(void);
-   bool execute(void);
+public:
+    ActionNone(void);
+    void init(void);
+    bool execute(void);
 };
