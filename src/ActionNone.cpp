@@ -10,12 +10,14 @@
 
 /*
  * Always keep the Action() bit in;
- * it calls the base class's constructor,
- * which sets m_initialized to false.
+ * it avoids some repetition of code.
  *
- * This avoids some repetition of code.
+ * All actions MUST have a single double
+ * as a parameter to the constructor.
+ * This is enforced to make parsing
+ * easier.
  */
-ActionNone::ActionNone(void)
+ActionNone::ActionNone(double dummy)
    : Action()
 {
 }

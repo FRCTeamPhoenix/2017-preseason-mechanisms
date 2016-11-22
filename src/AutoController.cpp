@@ -36,6 +36,8 @@ RobotController::performAction(void)
 	delete currentAction;
 	m_queue.pop();
     }
+
+    return true;
 }
 
 /*
