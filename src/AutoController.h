@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Actions.h"
+#include "BaseController.h"
 #include <queue>
 
 class AutoController : public BaseController
@@ -10,7 +11,7 @@ public:
     virtual ~AutoController(void);
 
     void run(void);
-    void performAction(void);
+    bool performAction(void);
     void clearQueue(void);
 private:
     std::queue<Action*> m_queue;

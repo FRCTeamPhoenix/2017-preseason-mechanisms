@@ -2,6 +2,7 @@
 
 #include <string>
 #include <queue>
+#include <map>
 #include "Actions.h"
 #include "FileStream.h"
 
@@ -16,7 +17,7 @@ public:
     void parse(std::queue<Action*> &queue);
 private:
     FileStream m_input;
-    static const _pmap parseMap;
+    static _pmap parseMap;
 };
 
 template <class A>

@@ -10,7 +10,7 @@ AutoController::~AutoController(void)
 }
 
 void
-RobotController::run(void)
+AutoController::run(void)
 {
     /* TODO: Make Y button clear queue of robot. */
     performAction();
@@ -20,7 +20,7 @@ RobotController::run(void)
  * Returns false if queue is empty.
  */
 bool
-RobotController::performAction(void)
+AutoController::performAction(void)
 {
     if (m_queue.empty())
     {
@@ -44,7 +44,7 @@ RobotController::performAction(void)
  * Simple utility function to clear Action queue.
  */
 void
-RobotController::clearQueue()
+AutoController::clearQueue()
 {
     while (!m_queue.empty())
     {

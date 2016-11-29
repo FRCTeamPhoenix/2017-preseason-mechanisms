@@ -1,7 +1,7 @@
 #include "FileStream.h"
 
 FileStream::FileStream(std::string filename)
-    : fstream(filename)
+    : std::fstream(filename)
 {
 }
 

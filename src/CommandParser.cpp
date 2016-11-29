@@ -1,11 +1,12 @@
 #include "CommandParser.h"
 
 #include <iostream>
+#include <sstream>
 
 #define ACTION_PAIR(n) {#n, createAction<n>}
 
 /* Add ACTION_PAIR for every existing action. */
-const _pmap CommandParser::parseMap =
+_pmap CommandParser::parseMap =
 {
     ACTION_PAIR(ActionNone),
 };
