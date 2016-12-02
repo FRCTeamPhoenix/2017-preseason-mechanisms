@@ -17,7 +17,7 @@
  * This is enforced to make parsing
  * easier.
  */
-ActionNone::ActionNone(double dummy)
+ActionNone::ActionNone(double value)
    : Action()
 {
 }

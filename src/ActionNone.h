@@ -5,7 +5,7 @@
 class ActionNone : public Action
 {
 public:
-    ActionNone(double dummy);
+    ActionNone(double value);
     void init(void);
     bool execute(void);
 };
