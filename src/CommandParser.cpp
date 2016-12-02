@@ -9,6 +9,7 @@
 _pmap CommandParser::parseMap =
 {
     ACTION_PAIR(ActionNone),
+    ACTION_PAIR(ActionPrint),
 };
 
 CommandParser::CommandParser(std::string filename)
