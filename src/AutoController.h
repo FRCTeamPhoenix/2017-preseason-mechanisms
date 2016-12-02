@@ -2,6 +2,7 @@
 
 #include "Actions.h"
 #include "BaseController.h"
+#include "CommandParser.h"
 #include <queue>
 
 class AutoController : public BaseController
@@ -14,5 +15,6 @@ public:
     bool performAction(void);
     void clearQueue(void);
 private:
+    CommandParser m_parser;
     std::queue<Action*> m_queue;
 };
