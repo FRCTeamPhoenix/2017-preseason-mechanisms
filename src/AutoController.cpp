@@ -4,7 +4,7 @@
 AutoController::AutoController(void)
     : m_parser("auto.txt")
 {
-    m_parser.parse(&m_queue);
+    m_parser.parse(m_queue);
 }
 
 AutoController::~AutoController(void)

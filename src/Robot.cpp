@@ -1,5 +1,6 @@
 #include "WPILib.h"
 
+#include "AutoController.h"
 #include "ConfigEditor.h"
 #include "LimitSwitch.h"
 

@@ -17,6 +17,9 @@ CommandParser::CommandParser(std::string filename)
 {
 }
 
+CommandParser::~CommandParser(void)
+{}
+
 void
 CommandParser::parse(std::queue<Action*> &queue)
 {
