@@ -1,10 +1,12 @@
 #include "AutoController.h"
+
 #include <iostream>
+#include <WPILib.h>
 
 AutoController::AutoController(void)
-    : m_parser("auto.txt")
+    : m_parser("/home/lvuser/auto.txt")
 {
-    m_parser.parse(m_queue);
+    m_parser.parse(&m_queue);
 }
 
 AutoController::~AutoController(void)

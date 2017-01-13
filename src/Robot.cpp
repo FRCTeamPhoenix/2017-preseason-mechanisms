@@ -22,6 +22,7 @@ public:
     {
         SmartDashboard::init();
         m_config.showAllKeys();
+        std::cout << "RobotInit" << std::endl;
     }
 
     void OperatorControl()

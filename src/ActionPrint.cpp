@@ -1,6 +1,8 @@
 #include "ActionPrint.h"
 
+#include <WPILib.h>
 #include <iostream>
+#include <sstream>
 
 ActionPrint::ActionPrint(double value)
     : Action(), m_value(value)

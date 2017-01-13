@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Action.h"
+#include "FileStream.h"
 
 class ActionPrint : public Action
 {

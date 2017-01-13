@@ -14,7 +14,7 @@ public:
     CommandParser(std::string filename);
     ~CommandParser(void);
 
-    void parse(std::queue<Action*> &queue);
+    void parse(std::queue<Action*>* queue);
 private:
     FileStream m_input;
     static _pmap parseMap;

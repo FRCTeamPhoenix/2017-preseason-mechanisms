@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <WPILib.h>
 
 #define ACTION_PAIR(n) {#n, createAction<n>}
 
@@ -21,12 +22,14 @@ CommandParser::~CommandParser(void)
 {}
 
 void
-CommandParser::parse(std::queue<Action*> &queue)
+CommandParser::parse(std::queue<Action*>* queue)
 {
+    // SmartDashboard::PutString("DB/String 7", "Blah");
     std::string line;
     int currentLine = 0;
     while (std::getline(m_input, line))
     {
+        std::cout << line << std::endl;
         currentLine++;
         if (line.length() == 0)
             continue;
@@ -38,15 +41,15 @@ CommandParser::parse(std::queue<Action*> &queue)
             double value;
             split >> actionName >> value;
 
-	    if (Action* (*generator)(double) = parseMap[actionName])
-		queue.push(generator(value));
-	    else
-		std::cerr << "Found nonexistent command at line "
-			  << currentLine << "." << std::endl;
+            if (Action* (*generator)(double) = parseMap[actionName])
+                queue->push(generator(value));
+            else
+                std::cerr << "Found nonexistent command at line "
+                          << currentLine << "." << std::endl;
 
-	    if (split.peek() == EOF)
-		std::cerr << "Found garbage at end of line "
-			  << currentLine << "." << std::endl;
+            if (split.peek() == EOF)
+                std::cerr << "Found garbage at end of line "
+                          << currentLine << "." << std::endl;
         }
         catch (...)
         {
