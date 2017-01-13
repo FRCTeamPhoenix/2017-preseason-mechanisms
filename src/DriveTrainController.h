@@ -7,8 +7,8 @@
    enumeration to correct motor channels. */
 enum MotorChannels
 {
-    FRONT_LEFT_MOTOR,
     REAR_LEFT_MOTOR,
+    FRONT_LEFT_MOTOR,
     FRONT_RIGHT_MOTOR,
     REAR_RIGHT_MOTOR
 };
